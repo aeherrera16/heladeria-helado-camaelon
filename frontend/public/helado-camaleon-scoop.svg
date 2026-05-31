@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="900" viewBox="0 0 900 900" fill="none" role="img" aria-label="Helado Camaleón">
+  <defs>
+    <linearGradient id="bg" x1="120" y1="90" x2="780" y2="820" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#4EB7C4" stop-opacity="0.14"/>
+      <stop offset="0.48" stop-color="#E9B55C" stop-opacity="0.08"/>
+      <stop offset="1" stop-color="#DF2642" stop-opacity="0.10"/>
+    </linearGradient>
+    <linearGradient id="cone" x1="360" y1="520" x2="520" y2="860" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E9B55C" stop-opacity="0.95"/>
+      <stop offset="1" stop-color="#D79D3F" stop-opacity="0.95"/>
+    </linearGradient>
+    <linearGradient id="scoop" x1="260" y1="220" x2="650" y2="560" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#DF2642" stop-opacity="0.88"/>
+      <stop offset="0.42" stop-color="#4EB7C4" stop-opacity="0.85"/>
+      <stop offset="1" stop-color="#E9B55C" stop-opacity="0.82"/>
+    </linearGradient>
+    <filter id="softShadow" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="24" stdDeviation="20" flood-color="#131218" flood-opacity="0.18"/>
+    </filter>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="10" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.7 0" result="glow"/>
+      <feMerge>
+        <feMergeNode in="glow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect x="40" y="40" width="820" height="820" rx="64" fill="url(#bg)"/>
+
+  <g filter="url(#softShadow)">
+    <path d="M390 520h120l70 290H320l70-290Z" fill="url(#cone)"/>
+    <path d="M418 560h64l-12 56h-40l-12-56Z" fill="#FFFFFF" fill-opacity="0.12"/>
+    <path d="M408 608h84l-10 46h-64l-10-46Z" fill="#FFFFFF" fill-opacity="0.10"/>
+    <path d="M396 662h108l-10 46H406l-10-46Z" fill="#FFFFFF" fill-opacity="0.08"/>
+  </g>
+
+  <g filter="url(#softShadow)">
+    <path d="M450 220c112 0 202 90 202 202 0 112-90 202-202 202-112 0-202-90-202-202 0-112 90-202 202-202Z" fill="url(#scoop)"/>
+    <path d="M338 380c22-70 92-120 176-120 60 0 114 26 150 68" stroke="#FFFFFF" stroke-opacity="0.28" stroke-width="22" stroke-linecap="round"/>
+    <path d="M306 474c34 74 108 126 194 126 78 0 147-42 184-104" stroke="#131218" stroke-opacity="0.10" stroke-width="18" stroke-linecap="round"/>
+  </g>
+
+  <g filter="url(#glow)" opacity="0.95">
+    <circle cx="250" cy="312" r="10" fill="#FFFFFF" fill-opacity="0.65"/>
+    <circle cx="690" cy="318" r="8" fill="#FFFFFF" fill-opacity="0.55"/>
+    <circle cx="640" cy="640" r="9" fill="#FFFFFF" fill-opacity="0.55"/>
+    <circle cx="260" cy="640" r="7" fill="#FFFFFF" fill-opacity="0.45"/>
+    <path d="M710 456c-22 30-48 54-78 72" stroke="#FFFFFF" stroke-opacity="0.45" stroke-width="10" stroke-linecap="round"/>
+  </g>
+</svg>

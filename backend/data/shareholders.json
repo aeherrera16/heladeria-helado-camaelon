@@ -1,0 +1,32 @@
+[
+  {
+    "id": "seed-1",
+    "name": "Stefania Salgado",
+    "role": "CEO y representante legal"
+  },
+  {
+    "id": "seed-2",
+    "name": "Camila Paredes",
+    "role": "Administración y finanzas"
+  },
+  {
+    "id": "seed-3",
+    "name": "Anahy Herrera",
+    "role": "Mercadeo"
+  },
+  {
+    "id": "seed-4",
+    "name": "Eliana Chamorro",
+    "role": "Marketing"
+  },
+  {
+    "id": "seed-5",
+    "name": "Tatiana Soria",
+    "role": "Producción"
+  },
+  {
+    "id": "seed-6",
+    "name": "Kevin Cañola",
+    "role": "Ventas"
+  }
+]

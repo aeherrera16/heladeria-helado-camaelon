@@ -1,0 +1,36 @@
+# OS
+.DS_Store
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Env
+.env
+.env.*
+
+# Vite / React
+frontend/dist/
+*.local
+
+# Next (some leftover folder exists in frontend)
+frontend/.next/
+
+# Backend builds
+backend/dist/
+
+# TypeScript
+*.tsbuildinfo
+
+# Python venv
+.venv/
+
+# Editors
+.vscode/
+.idea/
+
+# Misc
+coverage/

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900" fill="none" role="img" aria-label="Helado Camaleón - cambia de color">
+  <defs>
+    <linearGradient id="bg" x1="80" y1="70" x2="1120" y2="840" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="0.55" stop-color="#F7F7F3"/>
+      <stop offset="1" stop-color="#FFFFFF"/>
+    </linearGradient>
+    <radialGradient id="aura" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(600 410) rotate(90) scale(420 520)">
+      <stop stop-color="#4EB7C4" stop-opacity="0.34"/>
+      <stop offset="0.45" stop-color="#DF2642" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#E9B55C" stop-opacity="0.10"/>
+    </radialGradient>
+    <linearGradient id="cone" x1="520" y1="520" x2="680" y2="860" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E9B55C" stop-opacity="0.95"/>
+      <stop offset="1" stop-color="#D79D3F" stop-opacity="0.95"/>
+    </linearGradient>
+    <linearGradient id="scoop" x1="410" y1="230" x2="770" y2="560" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3CE3D3" stop-opacity="0.92"/>
+      <stop offset="0.34" stop-color="#7C4DFF" stop-opacity="0.86"/>
+      <stop offset="0.68" stop-color="#FF3B8E" stop-opacity="0.82"/>
+      <stop offset="1" stop-color="#FFD15E" stop-opacity="0.78"/>
+    </linearGradient>
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="28" stdDeviation="22" flood-color="#131218" flood-opacity="0.16"/>
+    </filter>
+  </defs>
+
+  <rect x="24" y="24" width="1152" height="852" rx="56" fill="url(#bg)"/>
+  <circle cx="600" cy="420" r="420" fill="url(#aura)"/>
+
+  <g filter="url(#shadow)">
+    <path d="M560 520h120l84 320H476l84-320Z" fill="url(#cone)"/>
+    <path d="M600 240c126 0 228 102 228 228S726 696 600 696 372 594 372 468 474 240 600 240Z" fill="url(#scoop)"/>
+    <path d="M470 410c26-86 112-148 214-148 74 0 140 34 184 86" stroke="#FFFFFF" stroke-opacity="0.26" stroke-width="22" stroke-linecap="round"/>
+    <path d="M420 520c44 96 142 164 260 164 104 0 196-52 246-134" stroke="#131218" stroke-opacity="0.08" stroke-width="18" stroke-linecap="round"/>
+  </g>
+
+  <g opacity="0.95">
+    <path d="M910 260c0 26-22 48-50 48-28 0-50-22-50-48 0-30 50-98 50-98s50 68 50 98Z" fill="#4EB7C4" fill-opacity="0.65"/>
+    <path d="M892 278c0 12-10 22-22 22" stroke="#FFFFFF" stroke-opacity="0.55" stroke-width="8" stroke-linecap="round"/>
+    <path d="M286 284c28-22 62-36 102-42" stroke="#DF2642" stroke-opacity="0.32" stroke-width="14" stroke-linecap="round"/>
+    <path d="M300 328c36-20 74-30 116-32" stroke="#7C4DFF" stroke-opacity="0.22" stroke-width="12" stroke-linecap="round"/>
+  </g>
+</svg>
