@@ -1,31 +1,28 @@
 import { ContactForm } from '@/components/contact-form';
-import { ShareholderManager } from '@/components/shareholder-manager';
+import { ChameleonChat } from '@/components/chameleon-chat';
 import {
-  contactHighlights,
   featureCards,
-  managementRoles,
-  targetAudience,
   productStats
 } from '@/data/site-content';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 
 const heroTiles = [
   {
     title: 'HELADO CAMALEÓN',
-    image: '/helado-camaleon-chameleon.svg'
+    image: '/step1-helado-base.png'
   },
   {
     title: 'CAMBIA DE COLOR',
-    image: '/helado-camaleon-color.svg'
+    image: '/step3-cambio-color.png'
   },
   {
     title: 'ACTIVACIÓN CON LIMÓN',
-    image: '/helado-camaleon-lemon.svg'
+    image: '/step2-agregar-limon.png'
   },
   {
     title: 'EXPERIENCIA VIRAL',
-    image: '/helado-camaleon-viral.svg'
+    image: '/step4-comparte.png'
   }
 ];
 
@@ -72,14 +69,43 @@ const testimonials = [
   },
   {
     quote:
-      'Me encantó que no es solo “un helado”, es un show. Los colores quedan increíbles en fotos.',
+      'Me encantó que no es solo "un helado", es un show. Los colores quedan increíbles en fotos.',
     author: 'Daniel Zambrano'
   }
 ];
 
-export default function App() {
-  const [isActivated, setIsActivated] = useState(false);
+const gallerySteps = [
+  {
+    image: '/step1-helado-base.png',
+    step: '01',
+    caption: 'Helado base'
+  },
+  {
+    image: '/step2-agregar-limon.png',
+    step: '02',
+    caption: 'Agrega limón'
+  },
+  {
+    image: '/step3-cambio-color.png',
+    step: '03',
+    caption: '¡Cambia de color!'
+  },
+  {
+    image: '/step4-comparte.png',
+    step: '04',
+    caption: '¡Comparte!'
+  }
+];
 
+const sectionIds = ['inicio', 'concepto', 'experiencia', 'contact'];
+
+export default function App() {
+  const [showLemonDrop, setShowLemonDrop] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [activeSection, setActiveSection] = useState('inicio');
+  const lemonTimeoutRef = useRef<number | null>(null);
+
+  // Intersection Observer for reveal animations
   useEffect(() => {
     document.documentElement.classList.add('reveal-enabled');
     const revealTargets = Array.from(document.querySelectorAll<HTMLElement>('[data-reveal]'));
@@ -104,6 +130,29 @@ export default function App() {
     };
   }, []);
 
+  // Intersection Observer for active section tracking
+  useEffect(() => {
+    const sections = sectionIds
+      .map((id) => document.getElementById(id))
+      .filter(Boolean) as HTMLElement[];
+
+    if (sections.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        }
+      },
+      { threshold: 0.2, rootMargin: '-100px 0px -40% 0px' }
+    );
+
+    for (const section of sections) observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
+
   const metricsFormatted = useMemo(
     () =>
       metrics.map((metric) => ({
@@ -113,6 +162,7 @@ export default function App() {
     []
   );
 
+  // Counter animation
   useEffect(() => {
     const metricNodes = Array.from(document.querySelectorAll<HTMLElement>('[data-count-to]'));
     if (metricNodes.length === 0) return;
@@ -156,11 +206,31 @@ export default function App() {
     return () => observer.disconnect();
   }, []);
 
+  const handleLemonClick = useCallback(() => {
+    if (isAnimating) return; // prevent spam clicks
+    // Start lemon drop animation
+    setShowLemonDrop(true);
+    setIsAnimating(true);
+    if (lemonTimeoutRef.current) clearTimeout(lemonTimeoutRef.current);
+    lemonTimeoutRef.current = window.setTimeout(() => {
+      setShowLemonDrop(false);
+      // Keep color pulse for a bit then reset
+      lemonTimeoutRef.current = window.setTimeout(() => {
+        setIsAnimating(false);
+      }, 600);
+    }, 900);
+  }, [isAnimating]);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (lemonTimeoutRef.current) clearTimeout(lemonTimeoutRef.current);
+    };
+  }, []);
+
   return (
     <main className="page-shell camaleon-style">
-      <a className="floating-contact" href="#contact" aria-label="Ir a contacto">
-        CHAT
-      </a>
+      <ChameleonChat />
 
       <header className="site-header" data-reveal>
         <a className="site-brand" href="#inicio" aria-label="Helado Camaleón">
@@ -168,11 +238,10 @@ export default function App() {
         </a>
 
         <nav className="site-nav" aria-label="Navegación principal">
-          <a href="#inicio" className="is-active">INICIO</a>
-          <a href="#concepto">CONCEPTO</a>
-          <a href="#experiencia">EXPERIENCIA</a>
-          <a href="#shareholders">ACCIONISTAS</a>
-          <a href="#contact">CONTACTO</a>
+          <a href="#inicio" className={activeSection === 'inicio' ? 'is-active' : ''}>INICIO</a>
+          <a href="#concepto" className={activeSection === 'concepto' ? 'is-active' : ''}>CONCEPTO</a>
+          <a href="#experiencia" className={activeSection === 'experiencia' ? 'is-active' : ''}>EXPERIENCIA</a>
+          <a href="#contact" className={activeSection === 'contact' ? 'is-active' : ''}>CONTACTO</a>
         </nav>
 
         <a className="button button--cta site-header__button site-header__button--teal" href="#contact">
@@ -213,15 +282,31 @@ export default function App() {
         </div>
       </section>
 
-      <section className="section section--domicilios" id="concepto" data-reveal>
-        <div className="domicilios-grid">
-          <img
-            className="domicilios-grid__image"
-            src="/helado-camaleon-scene.svg"
-            alt="Helado Camaleón cambia de color"
-          />
+      <section className="section section--concepto" id="concepto" data-reveal>
+        <div className="concepto-layout">
+          <div className={`concepto-layout__visual ${isAnimating ? 'is-animating' : ''} ${showLemonDrop ? 'is-dropping' : ''}`}>
+            {showLemonDrop && (
+              <div className="lemon-drop-container">
+                <div className="lemon-drop">🍋</div>
+                <div className="lemon-drop lemon-drop--2">💧</div>
+                <div className="lemon-drop lemon-drop--3">💧</div>
+              </div>
+            )}
+            <img
+              className="concepto-layout__image"
+              src="/step1-helado-base.png"
+              alt="Helado Camaleón cambia de color"
+            />
+            {/* Overlay clipped to scoop only — this gets the color animation */}
+            <img
+              className="concepto-layout__scoop-overlay"
+              src="/step1-helado-base.png"
+              alt=""
+              aria-hidden="true"
+            />
+          </div>
 
-          <div className="domicilios-grid__content">
+          <div className="concepto-layout__content">
             <span className="eyebrow">Concepto</span>
             <h2>Helado Camaleón: el helado que cambia de color.</h2>
             <p>
@@ -233,57 +318,41 @@ export default function App() {
               <button
                 className="button button--primary"
                 type="button"
-                onClick={() => setIsActivated((current) => !current)}
+                onClick={handleLemonClick}
               >
-                {isActivated ? 'Quitar limón' : 'Agregar limón'}
+                🍋 Agregar limón
               </button>
               <a className="button button--ghost" href="#contact">
                 Cotizar para evento
               </a>
             </div>
 
-            <div className={isActivated ? 'chameleon-demo is-activated' : 'chameleon-demo'} aria-label="Demo de cambio de color">
-              <img
-                className="chameleon-demo__scoop"
-                src={isActivated ? '/helado-camaleon-chameleon-activated.svg' : '/helado-camaleon-chameleon.svg'}
-                alt="Helado Camaleón"
-              />
-              <div className="chameleon-demo__meta">
-                {productStats.map((stat) => (
-                  <div key={stat.label} className="chameleon-demo__stat">
-                    <strong>{stat.value}</strong>
-                    <span>{stat.label}</span>
-                  </div>
-                ))}
-              </div>
+            <div className="concepto-stats">
+              {productStats.map((stat) => (
+                <div key={stat.label} className="concepto-stats__item">
+                  <strong>{stat.value}</strong>
+                  <span>{stat.label}</span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
-      <section className="section section--gallery" aria-label="Galería" data-reveal>
+      <section className="section section--gallery" aria-label="Proceso paso a paso" data-reveal>
         <div className="section__heading section__heading--center">
-          <span className="eyebrow">Galería</span>
-          <h2>Imágenes del concepto</h2>
+          <span className="eyebrow">Proceso</span>
+          <h2>Así funciona la magia 🪄</h2>
         </div>
 
         <div className="gallery-grid">
-          <figure className="gallery-card">
-            <img src="/helado-camaleon-logo.jpeg" alt="Logo Helado Camaleón" />
-            <figcaption>Identidad de marca</figcaption>
-          </figure>
-          <figure className="gallery-card">
-            <img src="/helado-camaleon-scene.svg" alt="Helado Camaleón y limón" />
-            <figcaption>Activación con limón</figcaption>
-          </figure>
-          <figure className="gallery-card">
-            <img src="/helado-camaleon-chameleon.svg" alt="Helado Camaleón" />
-            <figcaption>Helado Camaleón</figcaption>
-          </figure>
-          <figure className="gallery-card">
-            <img src="/helado-camaleon-chameleon-activated.svg" alt="Helado Camaleón (activado)" />
-            <figcaption>Cambio de color</figcaption>
-          </figure>
+          {gallerySteps.map((item) => (
+            <figure key={item.step} className="gallery-card">
+              <div className="gallery-card__step-badge">{item.step}</div>
+              <img src={item.image} alt={item.caption} />
+              <figcaption>{item.caption}</figcaption>
+            </figure>
+          ))}
         </div>
       </section>
 
@@ -343,81 +412,61 @@ export default function App() {
         </div>
 
         <div className="testimonials-grid">
-          {testimonials.map((testimonial, index) => (
+          {testimonials.map((testimonial) => (
             <article key={testimonial.author} className="testimonial-card">
               <div className="testimonial-card__brand">Helado Camaleón</div>
-              <p>“{testimonial.quote}”</p>
+              <p>"{testimonial.quote}"</p>
               <strong>{testimonial.author}</strong>
-              <span>Cliente {index + 1}</span>
             </article>
           ))}
         </div>
       </section>
 
-      <section className="section section--accent" id="shareholders" data-reveal>
-        <div className="section__heading">
-          <span className="eyebrow">Accionistas</span>
-          <h2>Sección editable para socios y fundadores</h2>
+      {/* CTA Accionistas — simple banner linking to contact */}
+      <section className="section section--cta-accionista" id="accionista" data-reveal>
+        <div className="cta-accionista">
+          <div className="cta-accionista__icon">🦎</div>
+          <h2>¿Quieres ser parte de Helado Camaleón?</h2>
+          <p>Conoce cómo ser accionista de esta experiencia única que cambia de color.</p>
+          <a className="button button--cta" href="#contact">
+            Contáctanos para más info
+          </a>
         </div>
-        <ShareholderManager />
       </section>
 
-      <section className="section split-section split-section--contact" id="contact" data-reveal>
-        <article className="panel-card panel-card--soft">
-          <span className="eyebrow">Contacto</span>
-          <h2>Una web tipo marca, atractiva y con movimiento.</h2>
-          <p>
-            Mantengo el panel editable de accionistas, y la portada está pensada para
-            que el producto se sienta vivo: cambio de color, microinteracciones y secciones
-            comerciales.
-          </p>
-          <ul className="contact-highlights">
-            {contactHighlights.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-
-          <div className="panel-subgrid" aria-label="Equipo y público objetivo">
-            <div className="panel-subgrid__card">
-              <h3>Equipo</h3>
-              <ul className="role-list">
-                {managementRoles.map((role) => (
-                  <li key={role.role}>
-                    <strong>{role.role}</strong>
-                    <span>{role.name}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="panel-subgrid__card">
-              <h3>Público</h3>
-              <ul className="target-list">
-                {targetAudience.map((audience) => (
-                  <li key={audience.title}>
-                    <strong>{audience.title}</strong>
-                    <span>{audience.description}</span>
-                  </li>
-                ))}
-              </ul>
+      {/* Contact Section — clean and simple */}
+      <section className="section section--contact" id="contact" data-reveal>
+        <div className="contact-wrapper">
+          <div className="contact-wrapper__info">
+            <span className="eyebrow">Contacto</span>
+            <h2>¿Listo para vivir la experiencia?</h2>
+            <p>
+              Escríbenos para cotizar eventos, conocer más sobre el producto o para
+              ser parte del equipo Helado Camaleón.
+            </p>
+            <div className="contact-wrapper__highlights">
+              <div className="contact-highlight-item">
+                <span className="contact-highlight-item__icon">🎪</span>
+                <span>Ferias y eventos</span>
+              </div>
+              <div className="contact-highlight-item">
+                <span className="contact-highlight-item__icon">💼</span>
+                <span>Oportunidades de inversión</span>
+              </div>
+              <div className="contact-highlight-item">
+                <span className="contact-highlight-item__icon">📦</span>
+                <span>Pedidos y cotizaciones</span>
+              </div>
             </div>
           </div>
-        </article>
-
-        <ContactForm />
+          <ContactForm />
+        </div>
       </section>
 
       <footer className="footer footer--camaleon" data-reveal>
         <div className="footer__brand">
           <img src="/helado-camaleon-logo.jpeg" alt="Helado Camaleón" />
           <p>Cada mordida es una nueva sorpresa. Helado Camaleón: una experiencia que cambia de color.</p>
-        </div>
-
-        <div className="footer__links">
-          <a href="#inicio">INICIO</a>
-          <a href="#concepto">CONCEPTO</a>
-          <a href="#experiencia">EXPERIENCIA</a>
-          <a href="#shareholders">ACCIONISTAS</a>
-          <a href="#contact">CONTACTO</a>
         </div>
 
         <div className="footer__subscribe">
