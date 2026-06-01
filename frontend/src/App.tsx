@@ -1,31 +1,28 @@
 import { ContactForm } from '@/components/contact-form';
-import { ShareholderManager } from '@/components/shareholder-manager';
+import { ChameleonChat } from '@/components/chameleon-chat';
 import {
-  contactHighlights,
   featureCards,
-  managementRoles,
-  targetAudience,
   productStats
 } from '@/data/site-content';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 
 const heroTiles = [
   {
     title: 'HELADO CAMALEÓN',
-    image: '/helado-camaleon-chameleon.svg'
+    image: '/step1-helado-base.png'
   },
   {
     title: 'CAMBIA DE COLOR',
-    image: '/helado-camaleon-color.svg'
+    image: '/step3-cambio-color.png'
   },
   {
     title: 'ACTIVACIÓN CON LIMÓN',
-    image: '/helado-camaleon-lemon.svg'
+    image: '/step2-agregar-limon.png'
   },
   {
     title: 'EXPERIENCIA VIRAL',
-    image: '/helado-camaleon-viral.svg'
+    image: '/step4-comparte.png'
   }
 ];
 
@@ -72,14 +69,137 @@ const testimonials = [
   },
   {
     quote:
-      'Me encantó que no es solo “un helado”, es un show. Los colores quedan increíbles en fotos.',
+      'Me encantó que no es solo "un helado", es un show. Los colores quedan increíbles en fotos.',
     author: 'Daniel Zambrano'
   }
 ];
 
-export default function App() {
-  const [isActivated, setIsActivated] = useState(false);
+const gallerySteps = [
+  {
+    image: '/step1-helado-base.png',
+    step: '01',
+    caption: 'Helado base'
+  },
+  {
+    image: '/step2-agregar-limon.png',
+    step: '02',
+    caption: 'Agrega limón'
+  },
+  {
+    image: '/step3-cambio-color.png',
+    step: '03',
+    caption: '¡Cambia de color!'
+  },
+  {
+    image: '/step4-comparte.png',
+    step: '04',
+    caption: '¡Comparte!'
+  }
+];
 
+const chameleonFlavors = [
+  {
+    id: 'mora',
+    name: 'Mora Camaleón',
+    description: 'Sabor estrella. Deliciosa base morada de moras silvestres que se transforma en un vibrante rosa fucsia con el limón.',
+    baseColor: '#6a1b9a',
+    activatedColor: '#e91e63',
+    icon: '🍇',
+    featured: true,
+    image: '/mora-camaleon.png'
+  },
+  {
+    id: 'limon',
+    name: 'Limón Celestial',
+    description: 'Refrescante y mágico. Un helado azul turquesa que cambia a un profundo violeta eléctrico al contacto con el ácido.',
+    baseColor: '#00bcd4',
+    activatedColor: '#673ab7',
+    icon: '🍋',
+    featured: false
+  },
+  {
+    id: 'fresa',
+    name: 'Fresa Silvestre',
+    description: 'El clásico reinventado. De un místico violeta suave pasa a un rojo carmín brillante e intenso. ¡Super fotografiable!',
+    baseColor: '#9c27b0',
+    activatedColor: '#d32f2f',
+    icon: '🍓',
+    featured: false
+  },
+  {
+    id: 'maracuya',
+    name: 'Maracuyá Mágico',
+    description: 'Pura fruta de la pasión. Una combinación mística de azul cobalto que se enciende en un naranja dorado súper tropical.',
+    baseColor: '#3f51b5',
+    activatedColor: '#ff9800',
+    icon: '🥭',
+    featured: false
+  },
+  {
+    id: 'mango',
+    name: 'Mango Tropical',
+    description: 'Dulce y audaz. Un helado naranja atardecer que se transforma en un rojo coral profundo con la acidez cítrica.',
+    baseColor: '#ff5722',
+    activatedColor: '#c2185b',
+    icon: '🥭',
+    featured: false
+  },
+  {
+    id: 'menta',
+    name: 'Menta Mágica',
+    description: 'Frescura extrema. Una base verde menta suave y natural que se transforma en un azul cerceta súper vibrante.',
+    baseColor: '#4caf50',
+    activatedColor: '#00838f',
+    icon: '🌿',
+    featured: false
+  },
+  {
+    id: 'coco',
+    name: 'Coco Glaciar',
+    description: 'Cremosidad tropical. De un suave azul pastel cielo pasa a revelar destellos violeta amatista mágicos al instante.',
+    baseColor: '#90caf9',
+    activatedColor: '#b39ddb',
+    icon: '🥥',
+    featured: false
+  },
+  {
+    id: 'arandano',
+    name: 'Arándano Místico',
+    description: 'Un viaje de sabor e intensidad. Índigo profundo hecho con arándanos reales que cambia a un magenta neón asombroso.',
+    baseColor: '#1a237e',
+    activatedColor: '#ff007f',
+    icon: '🫐',
+    featured: false
+  },
+  {
+    id: 'cereza',
+    name: 'Cereza Camaleón',
+    description: 'Sabor a cerezas silvestres. Comienza con un tono lavanda azulado y se transforma en un rosa chicle súper brillante al contacto cítrico.',
+    baseColor: '#7986cb',
+    activatedColor: '#ff4081',
+    icon: '🍒',
+    featured: false
+  },
+  {
+    id: 'pistacho',
+    name: 'Pistacho Mágico',
+    description: 'Exótico y cremoso. Un helado verde pistacho suave y natural que revela destellos dorados y de bronce cálido bajo la acidez.',
+    baseColor: '#81c784',
+    activatedColor: '#d4e157',
+    icon: '🍏',
+    featured: false
+  }
+];
+
+const sectionIds = ['inicio', 'concepto', 'sabores', 'experiencia', 'contact'];
+
+export default function App() {
+  const [showLemonDrop, setShowLemonDrop] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [activeSection, setActiveSection] = useState('inicio');
+  const lemonTimeoutRef = useRef<number | null>(null);
+
+  // Intersection Observer for reveal animations
   useEffect(() => {
     document.documentElement.classList.add('reveal-enabled');
     const revealTargets = Array.from(document.querySelectorAll<HTMLElement>('[data-reveal]'));
@@ -104,6 +224,29 @@ export default function App() {
     };
   }, []);
 
+  // Intersection Observer for active section tracking
+  useEffect(() => {
+    const sections = sectionIds
+      .map((id) => document.getElementById(id))
+      .filter(Boolean) as HTMLElement[];
+
+    if (sections.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        }
+      },
+      { threshold: 0.2, rootMargin: '-100px 0px -40% 0px' }
+    );
+
+    for (const section of sections) observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
+
   const metricsFormatted = useMemo(
     () =>
       metrics.map((metric) => ({
@@ -113,6 +256,7 @@ export default function App() {
     []
   );
 
+  // Counter animation
   useEffect(() => {
     const metricNodes = Array.from(document.querySelectorAll<HTMLElement>('[data-count-to]'));
     if (metricNodes.length === 0) return;
@@ -156,11 +300,31 @@ export default function App() {
     return () => observer.disconnect();
   }, []);
 
+  const handleLemonClick = useCallback(() => {
+    if (isAnimating) return; // prevent spam clicks
+    // Start lemon drop animation
+    setShowLemonDrop(true);
+    setIsAnimating(true);
+    if (lemonTimeoutRef.current) clearTimeout(lemonTimeoutRef.current);
+    lemonTimeoutRef.current = window.setTimeout(() => {
+      setShowLemonDrop(false);
+      // Keep color pulse for a bit then reset
+      lemonTimeoutRef.current = window.setTimeout(() => {
+        setIsAnimating(false);
+      }, 600);
+    }, 900);
+  }, [isAnimating]);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (lemonTimeoutRef.current) clearTimeout(lemonTimeoutRef.current);
+    };
+  }, []);
+
   return (
     <main className="page-shell camaleon-style">
-      <a className="floating-contact" href="#contact" aria-label="Ir a contacto">
-        CHAT
-      </a>
+      <ChameleonChat />
 
       <header className="site-header" data-reveal>
         <a className="site-brand" href="#inicio" aria-label="Helado Camaleón">
@@ -168,11 +332,11 @@ export default function App() {
         </a>
 
         <nav className="site-nav" aria-label="Navegación principal">
-          <a href="#inicio" className="is-active">INICIO</a>
-          <a href="#concepto">CONCEPTO</a>
-          <a href="#experiencia">EXPERIENCIA</a>
-          <a href="#shareholders">ACCIONISTAS</a>
-          <a href="#contact">CONTACTO</a>
+          <a href="#inicio" className={activeSection === 'inicio' ? 'is-active' : ''}>INICIO</a>
+          <a href="#concepto" className={activeSection === 'concepto' ? 'is-active' : ''}>CONCEPTO</a>
+          <a href="#sabores" className={activeSection === 'sabores' ? 'is-active' : ''}>SABORES</a>
+          <a href="#experiencia" className={activeSection === 'experiencia' ? 'is-active' : ''}>EXPERIENCIA</a>
+          <a href="#contact" className={activeSection === 'contact' ? 'is-active' : ''}>CONTACTO</a>
         </nav>
 
         <a className="button button--cta site-header__button site-header__button--teal" href="#contact">
@@ -213,15 +377,31 @@ export default function App() {
         </div>
       </section>
 
-      <section className="section section--domicilios" id="concepto" data-reveal>
-        <div className="domicilios-grid">
-          <img
-            className="domicilios-grid__image"
-            src="/helado-camaleon-scene.svg"
-            alt="Helado Camaleón cambia de color"
-          />
+      <section className="section section--concepto" id="concepto" data-reveal>
+        <div className="concepto-layout">
+          <div className={`concepto-layout__visual ${isAnimating ? 'is-animating' : ''} ${showLemonDrop ? 'is-dropping' : ''}`}>
+            {showLemonDrop && (
+              <div className="lemon-drop-container">
+                <div className="lemon-drop">🍋</div>
+                <div className="lemon-drop lemon-drop--2">💧</div>
+                <div className="lemon-drop lemon-drop--3">💧</div>
+              </div>
+            )}
+            <img
+              className="concepto-layout__image"
+              src="/step1-helado-base.png"
+              alt="Helado Camaleón cambia de color"
+            />
+            {/* Overlay clipped to scoop only — this gets the color animation */}
+            <img
+              className="concepto-layout__scoop-overlay"
+              src="/step1-helado-base.png"
+              alt=""
+              aria-hidden="true"
+            />
+          </div>
 
-          <div className="domicilios-grid__content">
+          <div className="concepto-layout__content">
             <span className="eyebrow">Concepto</span>
             <h2>Helado Camaleón: el helado que cambia de color.</h2>
             <p>
@@ -233,57 +413,107 @@ export default function App() {
               <button
                 className="button button--primary"
                 type="button"
-                onClick={() => setIsActivated((current) => !current)}
+                onClick={handleLemonClick}
               >
-                {isActivated ? 'Quitar limón' : 'Agregar limón'}
+                🍋 Agregar limón
               </button>
               <a className="button button--ghost" href="#contact">
                 Cotizar para evento
               </a>
             </div>
 
-            <div className={isActivated ? 'chameleon-demo is-activated' : 'chameleon-demo'} aria-label="Demo de cambio de color">
-              <img
-                className="chameleon-demo__scoop"
-                src={isActivated ? '/helado-camaleon-chameleon-activated.svg' : '/helado-camaleon-chameleon.svg'}
-                alt="Helado Camaleón"
-              />
-              <div className="chameleon-demo__meta">
-                {productStats.map((stat) => (
-                  <div key={stat.label} className="chameleon-demo__stat">
-                    <strong>{stat.value}</strong>
-                    <span>{stat.label}</span>
-                  </div>
-                ))}
-              </div>
+            <div className="concepto-stats">
+              {productStats.map((stat) => (
+                <div key={stat.label} className="concepto-stats__item">
+                  <strong>{stat.value}</strong>
+                  <span>{stat.label}</span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
-      <section className="section section--gallery" aria-label="Galería" data-reveal>
+      <section className="section section--sabores" id="sabores" data-reveal>
         <div className="section__heading section__heading--center">
-          <span className="eyebrow">Galería</span>
-          <h2>Imágenes del concepto</h2>
+          <span className="eyebrow">NUESTROS SABORES</span>
+          <h2>La Magia de la Naturaleza en 8 Sabores 🌈</h2>
+          <p>
+            Cada uno de nuestros helados está elaborado con ingredientes 100% naturales que reaccionan de manera única con las gotitas de limón. ¡Elige tu sabor y vive la transformación!
+          </p>
+        </div>
+
+        {/* Sabor Estrella (Mora Camaleón) */}
+        <div className="sabor-estrella">
+          <div className="sabor-estrella__image-container">
+            <img src="/mora-camaleon.png" alt="Mora Camaleón - Helado que cambia de color" className="sabor-estrella__image" />
+            <div className="sabor-estrella__tag">⭐️ SABOR ESTRELLA</div>
+          </div>
+          <div className="sabor-estrella__content">
+            <span className="eyebrow">Sabor más vendido</span>
+            <h3>Mora Camaleón</h3>
+            <p className="sabor-estrella__desc">
+              Nuestro sabor más popular y viral. Elaborado con un concentrado puro de moras silvestres ricas en antocianinas. Al servirlo, tiene un color morado profundo y misterioso, pero al exprimirle unas gotas de limón fresco, se enciende instantáneamente en un color rosa fucsia súper brillante ante tus ojos. ¡Una experiencia visual y de sabor inigualable!
+            </p>
+            
+            <div className="sabor-estrella__pH">
+              <div className="sabor-estrella__pH-circle" style={{ backgroundColor: '#6a1b9a' }}>
+                <span>Morado</span>
+                <small>Color Base</small>
+              </div>
+              <div className="sabor-estrella__pH-connector">
+                <span>🍋 + 💧</span>
+                <div className="arrow-line"></div>
+              </div>
+              <div className="sabor-estrella__pH-circle active-glow" style={{ backgroundColor: '#e91e63' }}>
+                <span>Rosa Fucsia</span>
+                <small>¡Activado!</small>
+              </div>
+            </div>
+
+            <div className="sabor-estrella__actions">
+              <a href="#contact" className="button button--cta">Quiero probar este sabor</a>
+            </div>
+          </div>
+        </div>
+
+        {/* Grilla de Sabores */}
+        <div className="sabores-grid">
+          {chameleonFlavors.filter(f => !f.featured).map((flavor) => {
+            return (
+              <div key={flavor.id} className="sabor-card">
+                <div className="sabor-card__header">
+                  <span className="sabor-card__icon">{flavor.icon}</span>
+                  <h4>{flavor.name}</h4>
+                </div>
+                <p>{flavor.description}</p>
+                <div className="sabor-card__footer">
+                  <div className="sabor-card__color-flow">
+                    <span className="color-dot" style={{ backgroundColor: flavor.baseColor }} title="Color Base"></span>
+                    <span className="color-flow-indicator">🍋 ➡️</span>
+                    <span className="color-dot active-dot" style={{ backgroundColor: flavor.activatedColor }} title="Color Activado"></span>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className="section section--gallery" aria-label="Proceso paso a paso" data-reveal>
+        <div className="section__heading section__heading--center">
+          <span className="eyebrow">Proceso</span>
+          <h2>Así funciona la magia 🪄</h2>
         </div>
 
         <div className="gallery-grid">
-          <figure className="gallery-card">
-            <img src="/helado-camaleon-logo.jpeg" alt="Logo Helado Camaleón" />
-            <figcaption>Identidad de marca</figcaption>
-          </figure>
-          <figure className="gallery-card">
-            <img src="/helado-camaleon-scene.svg" alt="Helado Camaleón y limón" />
-            <figcaption>Activación con limón</figcaption>
-          </figure>
-          <figure className="gallery-card">
-            <img src="/helado-camaleon-chameleon.svg" alt="Helado Camaleón" />
-            <figcaption>Helado Camaleón</figcaption>
-          </figure>
-          <figure className="gallery-card">
-            <img src="/helado-camaleon-chameleon-activated.svg" alt="Helado Camaleón (activado)" />
-            <figcaption>Cambio de color</figcaption>
-          </figure>
+          {gallerySteps.map((item) => (
+            <figure key={item.step} className="gallery-card">
+              <div className="gallery-card__step-badge">{item.step}</div>
+              <img src={item.image} alt={item.caption} />
+              <figcaption>{item.caption}</figcaption>
+            </figure>
+          ))}
         </div>
       </section>
 
@@ -343,81 +573,84 @@ export default function App() {
         </div>
 
         <div className="testimonials-grid">
-          {testimonials.map((testimonial, index) => (
+          {testimonials.map((testimonial) => (
             <article key={testimonial.author} className="testimonial-card">
               <div className="testimonial-card__brand">Helado Camaleón</div>
-              <p>“{testimonial.quote}”</p>
+              <p>"{testimonial.quote}"</p>
               <strong>{testimonial.author}</strong>
-              <span>Cliente {index + 1}</span>
             </article>
           ))}
         </div>
       </section>
 
-      <section className="section section--accent" id="shareholders" data-reveal>
-        <div className="section__heading">
-          <span className="eyebrow">Accionistas</span>
-          <h2>Sección editable para socios y fundadores</h2>
+      {/* CTA Accionistas — simple banner linking to contact */}
+      <section className="section section--cta-accionista" id="accionista" data-reveal>
+        <div className="cta-accionista">
+          <div className="cta-accionista__icon">🦎</div>
+          <h2>¿Quieres ser parte de Helado Camaleón?</h2>
+          <p>Conoce cómo ser accionista de esta experiencia única que cambia de color.</p>
+          <a className="button button--cta" href="#contact">
+            Contáctanos para más info
+          </a>
         </div>
-        <ShareholderManager />
       </section>
 
-      <section className="section split-section split-section--contact" id="contact" data-reveal>
-        <article className="panel-card panel-card--soft">
-          <span className="eyebrow">Contacto</span>
-          <h2>Una web tipo marca, atractiva y con movimiento.</h2>
-          <p>
-            Mantengo el panel editable de accionistas, y la portada está pensada para
-            que el producto se sienta vivo: cambio de color, microinteracciones y secciones
-            comerciales.
-          </p>
-          <ul className="contact-highlights">
-            {contactHighlights.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-
-          <div className="panel-subgrid" aria-label="Equipo y público objetivo">
-            <div className="panel-subgrid__card">
-              <h3>Equipo</h3>
-              <ul className="role-list">
-                {managementRoles.map((role) => (
-                  <li key={role.role}>
-                    <strong>{role.role}</strong>
-                    <span>{role.name}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="panel-subgrid__card">
-              <h3>Público</h3>
-              <ul className="target-list">
-                {targetAudience.map((audience) => (
-                  <li key={audience.title}>
-                    <strong>{audience.title}</strong>
-                    <span>{audience.description}</span>
-                  </li>
-                ))}
-              </ul>
+      {/* Contact Section — clean and simple */}
+      <section className="section section--contact" id="contact" data-reveal>
+        <div className="contact-wrapper">
+          <div className="contact-wrapper__info">
+            <span className="eyebrow">Contacto</span>
+            <h2>¿Listo para vivir la experiencia?</h2>
+            <p>
+              Escríbenos para cotizar eventos, conocer más sobre el producto o para
+              ser parte del equipo Helado Camaleón.
+            </p>
+            <div className="contact-wrapper__highlights">
+              <div className="contact-highlight-item">
+                <span className="contact-highlight-item__icon">🎪</span>
+                <span>Ferias y eventos</span>
+              </div>
+              <div className="contact-highlight-item">
+                <span className="contact-highlight-item__icon">💼</span>
+                <span>Oportunidades de inversión</span>
+              </div>
+              <div className="contact-highlight-item">
+                <span className="contact-highlight-item__icon">📦</span>
+                <span>Pedidos y cotizaciones</span>
+              </div>
             </div>
           </div>
-        </article>
-
-        <ContactForm />
+          <ContactForm />
+        </div>
       </section>
 
       <footer className="footer footer--camaleon" data-reveal>
         <div className="footer__brand">
           <img src="/helado-camaleon-logo.jpeg" alt="Helado Camaleón" />
           <p>Cada mordida es una nueva sorpresa. Helado Camaleón: una experiencia que cambia de color.</p>
-        </div>
-
-        <div className="footer__links">
-          <a href="#inicio">INICIO</a>
-          <a href="#concepto">CONCEPTO</a>
-          <a href="#experiencia">EXPERIENCIA</a>
-          <a href="#shareholders">ACCIONISTAS</a>
-          <a href="#contact">CONTACTO</a>
+          <div className="footer__social-container">
+            <strong>SÍGUENOS</strong>
+            <div className="footer__social-links">
+              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="social-icon-btn facebook" aria-label="Facebook">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+              </a>
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="social-icon-btn instagram" aria-label="Instagram">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+              </a>
+              <a href="https://tiktok.com" target="_blank" rel="noopener noreferrer" className="social-icon-btn tiktok" aria-label="TikTok">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path></svg>
+              </a>
+              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="social-icon-btn youtube" aria-label="YouTube">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg>
+              </a>
+              <a href="https://x.com" target="_blank" rel="noopener noreferrer" className="social-icon-btn twitter" aria-label="X (Twitter)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4l11.733 16h4.267l-11.733 -16z"></path><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772"></path></svg>
+              </a>
+              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="social-icon-btn linkedin" aria-label="LinkedIn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+              </a>
+            </div>
+          </div>
         </div>
 
         <div className="footer__subscribe">
