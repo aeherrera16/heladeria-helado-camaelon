@@ -1,6 +1,7 @@
 import cors from 'cors';
 import express from 'express';
 import { randomUUID } from 'crypto';
+import path from 'path';
 import { readMessages, readShareholders, saveMessages, saveShareholders } from './lib/store.js';
 
 const app = express();
@@ -69,6 +70,18 @@ app.post('/api/contact', async (request, response) => {
   await saveMessages(messages);
 
   response.status(201).json({ ok: true, entry });
+});
+
+// Servir archivos estáticos del frontend en producción
+const frontendDistPath = path.join(process.cwd(), 'frontend', 'dist');
+app.use(express.static(frontendDistPath));
+
+// Soporte para enrutamiento SPA en el cliente
+app.use((req, res, next) => {
+  if (req.path.startsWith('/api') || req.path.startsWith('/health')) {
+    return next();
+  }
+  res.sendFile(path.join(frontendDistPath, 'index.html'));
 });
 
 app.listen(port, () => {
