@@ -86,7 +86,8 @@ button, input, textarea { font: inherit; }
   font-weight: 700; cursor: pointer;
 }
 .button:hover { transform: translateY(-2px); }
-.button--cta, .button--pedido, .site-header__button--teal { color: #fff; background: #56bfd0; }
+.button--cta, .button--pedido { color: #fff; background: #56bfd0; }
+.site-header__button--teal { color: #fff; background: #000000; }
 .button--primary { color: #fff; background: var(--red); }
 .button--ghost { background: #fff; border: 1px solid rgba(31,29,39,0.12); }
 
