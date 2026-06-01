@@ -97,7 +97,101 @@ const gallerySteps = [
   }
 ];
 
-const sectionIds = ['inicio', 'concepto', 'experiencia', 'contact'];
+const chameleonFlavors = [
+  {
+    id: 'mora',
+    name: 'Mora Camaleón',
+    description: 'Sabor estrella. Deliciosa base morada de moras silvestres que se transforma en un vibrante rosa fucsia con el limón.',
+    baseColor: '#6a1b9a',
+    activatedColor: '#e91e63',
+    icon: '🍇',
+    featured: true,
+    image: '/mora-camaleon.png'
+  },
+  {
+    id: 'limon',
+    name: 'Limón Celestial',
+    description: 'Refrescante y mágico. Un helado azul turquesa que cambia a un profundo violeta eléctrico al contacto con el ácido.',
+    baseColor: '#00bcd4',
+    activatedColor: '#673ab7',
+    icon: '🍋',
+    featured: false
+  },
+  {
+    id: 'fresa',
+    name: 'Fresa Silvestre',
+    description: 'El clásico reinventado. De un místico violeta suave pasa a un rojo carmín brillante e intenso. ¡Super fotografiable!',
+    baseColor: '#9c27b0',
+    activatedColor: '#d32f2f',
+    icon: '🍓',
+    featured: false
+  },
+  {
+    id: 'maracuya',
+    name: 'Maracuyá Mágico',
+    description: 'Pura fruta de la pasión. Una combinación mística de azul cobalto que se enciende en un naranja dorado súper tropical.',
+    baseColor: '#3f51b5',
+    activatedColor: '#ff9800',
+    icon: '🥭',
+    featured: false
+  },
+  {
+    id: 'mango',
+    name: 'Mango Tropical',
+    description: 'Dulce y audaz. Un helado naranja atardecer que se transforma en un rojo coral profundo con la acidez cítrica.',
+    baseColor: '#ff5722',
+    activatedColor: '#c2185b',
+    icon: '🥭',
+    featured: false
+  },
+  {
+    id: 'menta',
+    name: 'Menta Mágica',
+    description: 'Frescura extrema. Una base verde menta suave y natural que se transforma en un azul cerceta súper vibrante.',
+    baseColor: '#4caf50',
+    activatedColor: '#00838f',
+    icon: '🌿',
+    featured: false
+  },
+  {
+    id: 'coco',
+    name: 'Coco Glaciar',
+    description: 'Cremosidad tropical. De un suave azul pastel cielo pasa a revelar destellos violeta amatista mágicos al instante.',
+    baseColor: '#90caf9',
+    activatedColor: '#b39ddb',
+    icon: '🥥',
+    featured: false
+  },
+  {
+    id: 'arandano',
+    name: 'Arándano Místico',
+    description: 'Un viaje de sabor e intensidad. Índigo profundo hecho con arándanos reales que cambia a un magenta neón asombroso.',
+    baseColor: '#1a237e',
+    activatedColor: '#ff007f',
+    icon: '🫐',
+    featured: false
+  },
+  {
+    id: 'cereza',
+    name: 'Cereza Camaleón',
+    description: 'Sabor a cerezas silvestres. Comienza con un tono lavanda azulado y se transforma en un rosa chicle súper brillante al contacto cítrico.',
+    baseColor: '#7986cb',
+    activatedColor: '#ff4081',
+    icon: '🍒',
+    featured: false
+  },
+  {
+    id: 'pistacho',
+    name: 'Pistacho Mágico',
+    description: 'Exótico y cremoso. Un helado verde pistacho suave y natural que revela destellos dorados y de bronce cálido bajo la acidez.',
+    baseColor: '#81c784',
+    activatedColor: '#d4e157',
+    icon: '🍏',
+    featured: false
+  }
+];
+
+const sectionIds = ['inicio', 'concepto', 'sabores', 'experiencia', 'contact'];
 
 export default function App() {
   const [showLemonDrop, setShowLemonDrop] = useState(false);
@@ -240,6 +334,7 @@ export default function App() {
         <nav className="site-nav" aria-label="Navegación principal">
           <a href="#inicio" className={activeSection === 'inicio' ? 'is-active' : ''}>INICIO</a>
           <a href="#concepto" className={activeSection === 'concepto' ? 'is-active' : ''}>CONCEPTO</a>
+          <a href="#sabores" className={activeSection === 'sabores' ? 'is-active' : ''}>SABORES</a>
           <a href="#experiencia" className={activeSection === 'experiencia' ? 'is-active' : ''}>EXPERIENCIA</a>
           <a href="#contact" className={activeSection === 'contact' ? 'is-active' : ''}>CONTACTO</a>
         </nav>
@@ -336,6 +431,72 @@ export default function App() {
               ))}
             </div>
           </div>
+        </div>
+      </section>
+
+      <section className="section section--sabores" id="sabores" data-reveal>
+        <div className="section__heading section__heading--center">
+          <span className="eyebrow">NUESTROS SABORES</span>
+          <h2>La Magia de la Naturaleza en 8 Sabores 🌈</h2>
+          <p>
+            Cada uno de nuestros helados está elaborado con ingredientes 100% naturales que reaccionan de manera única con las gotitas de limón. ¡Elige tu sabor y vive la transformación!
+          </p>
+        </div>
+
+        {/* Sabor Estrella (Mora Camaleón) */}
+        <div className="sabor-estrella">
+          <div className="sabor-estrella__image-container">
+            <img src="/mora-camaleon.png" alt="Mora Camaleón - Helado que cambia de color" className="sabor-estrella__image" />
+            <div className="sabor-estrella__tag">⭐️ SABOR ESTRELLA</div>
+          </div>
+          <div className="sabor-estrella__content">
+            <span className="eyebrow">Sabor más vendido</span>
+            <h3>Mora Camaleón</h3>
+            <p className="sabor-estrella__desc">
+              Nuestro sabor más popular y viral. Elaborado con un concentrado puro de moras silvestres ricas en antocianinas. Al servirlo, tiene un color morado profundo y misterioso, pero al exprimirle unas gotas de limón fresco, se enciende instantáneamente en un color rosa fucsia súper brillante ante tus ojos. ¡Una experiencia visual y de sabor inigualable!
+            </p>
+            
+            <div className="sabor-estrella__pH">
+              <div className="sabor-estrella__pH-circle" style={{ backgroundColor: '#6a1b9a' }}>
+                <span>Morado</span>
+                <small>Color Base</small>
+              </div>
+              <div className="sabor-estrella__pH-connector">
+                <span>🍋 + 💧</span>
+                <div className="arrow-line"></div>
+              </div>
+              <div className="sabor-estrella__pH-circle active-glow" style={{ backgroundColor: '#e91e63' }}>
+                <span>Rosa Fucsia</span>
+                <small>¡Activado!</small>
+              </div>
+            </div>
+
+            <div className="sabor-estrella__actions">
+              <a href="#contact" className="button button--cta">Quiero probar este sabor</a>
+            </div>
+          </div>
+        </div>
+
+        {/* Grilla de Sabores */}
+        <div className="sabores-grid">
+          {chameleonFlavors.filter(f => !f.featured).map((flavor) => {
+            return (
+              <div key={flavor.id} className="sabor-card">
+                <div className="sabor-card__header">
+                  <span className="sabor-card__icon">{flavor.icon}</span>
+                  <h4>{flavor.name}</h4>
+                </div>
+                <p>{flavor.description}</p>
+                <div className="sabor-card__footer">
+                  <div className="sabor-card__color-flow">
+                    <span className="color-dot" style={{ backgroundColor: flavor.baseColor }} title="Color Base"></span>
+                    <span className="color-flow-indicator">🍋 ➡️</span>
+                    <span className="color-dot active-dot" style={{ backgroundColor: flavor.activatedColor }} title="Color Activado"></span>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </section>
 
@@ -467,6 +628,29 @@ export default function App() {
         <div className="footer__brand">
           <img src="/helado-camaleon-logo.jpeg" alt="Helado Camaleón" />
           <p>Cada mordida es una nueva sorpresa. Helado Camaleón: una experiencia que cambia de color.</p>
+          <div className="footer__social-container">
+            <strong>SÍGUENOS</strong>
+            <div className="footer__social-links">
+              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="social-icon-btn facebook" aria-label="Facebook">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+              </a>
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="social-icon-btn instagram" aria-label="Instagram">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+              </a>
+              <a href="https://tiktok.com" target="_blank" rel="noopener noreferrer" className="social-icon-btn tiktok" aria-label="TikTok">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path></svg>
+              </a>
+              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="social-icon-btn youtube" aria-label="YouTube">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg>
+              </a>
+              <a href="https://x.com" target="_blank" rel="noopener noreferrer" className="social-icon-btn twitter" aria-label="X (Twitter)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4l11.733 16h4.267l-11.733 -16z"></path><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772"></path></svg>
+              </a>
+              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="social-icon-btn linkedin" aria-label="LinkedIn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+              </a>
+            </div>
+          </div>
         </div>
 
         <div className="footer__subscribe">
