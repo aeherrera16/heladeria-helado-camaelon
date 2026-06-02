@@ -736,6 +736,12 @@ button, input, textarea { font: inherit; }
   box-shadow: 0 8px 20px rgba(10,102,194,0.3);
 }
 
+.social-icon-btn.email:hover {
+  background-color: #ea4335;
+  border-color: #ea4335;
+  box-shadow: 0 8px 20px rgba(234,67,53,0.3);
+}
+
 /* ─── CHAMELEON CHAT ─── */
 .chameleon-chat__fab {
   position: fixed; right: 20px; bottom: 20px;
