@@ -1,5 +1,5 @@
 # --- Stage 1: Build Frontend and Backend ---
-FROM node:20-alpine AS builder
+FROM mirror.gcr.io/library/node:20-alpine AS builder
 WORKDIR /app
 
 # Copiar archivos de configuración de workspaces y dependencias
@@ -21,7 +21,7 @@ ENV VITE_API_URL=""
 RUN npm run build
 
 # --- Stage 2: Production Image ---
-FROM node:20-alpine AS runner
+FROM mirror.gcr.io/library/node:20-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
